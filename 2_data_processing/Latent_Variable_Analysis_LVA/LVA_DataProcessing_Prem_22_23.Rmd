@@ -1,0 +1,73 @@
+---
+title: "Data Processing for Latent Variable Analysis (LVA)"
+author: "Tahmeed Tureen"
+date: 'League: English Premier League'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages & Source Files
+
+Load the relevant packages and source files to perform data processing on FBref Data
+
+Data Source: [FBref](https://fbref.com/en/) in collaboration with [StatsPerform](https://www.statsperform.com/)
+
+Data Downloaded via [worldfootballR](https://jaseziv.github.io/worldfootballR/index.html)
+
+```{r warning = F, message = FALSE}
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(tidyr)
+library(purrr)
+
+source("../../1_helper_functions/fbref_helpers.R")
+
+season <- "2022-2023"
+
+# Read relevant data
+standard_data <- readRDS(file = "../../3_data/premier_league/player_standard_stats.RDS")
+poss_data <- readRDS(file = "../../3_data/premier_league/player_possession_stats.RDS")
+pass_data <- readRDS(file = "../../3_data/premier_league/player_passing_stats.RDS")
+pass_types_data <- readRDS(file = "../../3_data/premier_league/player_passing_types_stats.RDS")
+```
+
+## Standard Statistics
+
+### Process & Filter the raw data
+
+- Create the main dataset to append additional stats onto
+
+```{r}
+# Use helper functions from 1_helper_functions/ directory
+main_data <- processStandard(data_in = standard_data, season_in = season)
+```
+
+### Correlation Analysis & Distributions
+
+```{r}
+vizCorrelation(data_in = main_data)
+vizContinuous(data_in = main_data)
+```
+\newpage
+
+## Possession Statistics
+
+### Correlation Analysis & Distributions
+
+```{r}
+data_in <- poss_data
+season_in = season
+
+main_data <- processPossession(main_data_in = main_data, data_in = poss_data, season_in = season)
+```
+# Passing Statistics
+
+```{r}
+
+
+```
+
