@@ -64,10 +64,36 @@ season_in = season
 
 main_data <- processPossession(main_data_in = main_data, data_in = poss_data, season_in = season)
 ```
-# Passing Statistics
+## Passing Statistics
+
+### Correlation Analysis & Distributions
 
 ```{r}
+data_in <- pass_data
+season_in = season
 
+append_data <- data_in %>% 
+  filter(Mins_Per_90 != 0) %>% 
+  select(-c(Nation,
+            Pos,
+            Age,
+            Mins_Per_90,
+            PlayerURL)) 
+
+# Need to impute NAs with Zeros for Percent Variables
+
+numeric_vars <- colnames(append_data %>% select_if(is.numeric))
+
+append_data <- append_data %>% 
+  rename_with(.cols = numeric_vars, 
+              .fn = function(x) paste0("Pass_", x)) # add a prefix "Pass" to variable names
+
+vizCorrelation(data_in = append_data)
+vizContinuous(data_in = append_data)
+  
+  output_data <- main_data_in %>% 
+    left_join(append_data, by = c("Season", "Player", "Squad", "Comp"))
+  
 
 ```
 
