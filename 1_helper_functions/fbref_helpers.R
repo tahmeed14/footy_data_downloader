@@ -42,7 +42,8 @@ processStandard <- function(data_in, season_in) {
   
   output_data <- data_in %>% 
     filter(Season == season_in) %>% 
-    filter(!is.na(Min_Playing_Time)) %>%
+    filter(!is.na(Min_Playing_Time)) %>% 
+    filter(Min_Playing_Time >= 5) %>% 
     mutate(MP = if_else(is.na(MP),
                         true = 0,
                         false = MP),

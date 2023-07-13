@@ -130,6 +130,22 @@ main_data <- processMisc(main_data_in = main_data,
 ## Save Data
 
 ```{r}
-saveRDS(obj = main_data, file = "../../../football_latent_variable_analysis/1_data/pl_player_stats_2223")
+saveRDS(obj = main_data, file = "../../../football_latent_variable_analysis/1_data/pl_player_stats_2223.RDS")
 ```
+
+
+## Create a Correlation Plot
+
+```{r}
+# Drop non-numeric variables
+corr_df <- main_data %>% 
+    dplyr::select_if(is.numeric)
+
+corr_df <- cor(corr_df)
+
+write.csv(corr_df,
+          file = "../../../football_latent_variable_analysis/1_data/pl_player_stats_pcorr.csv",
+          row.names = TRUE)
+```
+
 
