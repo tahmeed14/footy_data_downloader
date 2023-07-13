@@ -33,6 +33,10 @@ standard_data <- readRDS(file = "../../3_data/premier_league/player_standard_sta
 poss_data <- readRDS(file = "../../3_data/premier_league/player_possession_stats.RDS")
 pass_data <- readRDS(file = "../../3_data/premier_league/player_passing_stats.RDS")
 pass_types_data <- readRDS(file = "../../3_data/premier_league/player_passing_types_stats.RDS")
+sgca_data <- readRDS(file = "../../3_data/premier_league/player_gca_stats.RDS")
+def_data <- readRDS(file = "../../3_data/premier_league/player_defense_stats.RDS")
+misc_data <- readRDS(file = "../../3_data/premier_league/player_misc_stats.RDS")
+shot_data <- readRDS(file = "../../3_data/premier_league/player_shooting_stats.RDS")
 ```
 
 ## Standard Statistics
@@ -64,36 +68,68 @@ season_in = season
 
 main_data <- processPossession(main_data_in = main_data, data_in = poss_data, season_in = season)
 ```
+
+
+
 ## Passing Statistics
 
 ### Correlation Analysis & Distributions
 
 ```{r}
-data_in <- pass_data
-season_in = season
+main_data <- processPass(main_data_in = main_data, 
+                         data_in = pass_data, 
+                         season_in = season)
+```
 
-append_data <- data_in %>% 
-  filter(Mins_Per_90 != 0) %>% 
-  select(-c(Nation,
-            Pos,
-            Age,
-            Mins_Per_90,
-            PlayerURL)) 
+## Pass Types
 
-# Need to impute NAs with Zeros for Percent Variables
+### Correlation Analysis & Distributions
 
-numeric_vars <- colnames(append_data %>% select_if(is.numeric))
+```{r}
+main_data <- processPassTypes(main_data_in = main_data,
+                              data_in = pass_types_data,
+                              season_in = season)
+```
+## Shooting Data
 
-append_data <- append_data %>% 
-  rename_with(.cols = numeric_vars, 
-              .fn = function(x) paste0("Pass_", x)) # add a prefix "Pass" to variable names
+### Correlation Analysis & Distributions
 
-vizCorrelation(data_in = append_data)
-vizContinuous(data_in = append_data)
-  
-  output_data <- main_data_in %>% 
-    left_join(append_data, by = c("Season", "Player", "Squad", "Comp"))
-  
+```{r}
+main_data <- processShots(main_data_in = main_data,
+                          data_in = shot_data,
+                          season_in = season)
+```
 
+## Shot & Goal Creating Actions
+
+### Correlation Analysis & Distributions
+
+```{r}
+main_data <- processSGCA(main_data_in = main_data,
+                         data_in = sgca_data,
+                         season_in = season)
+```
+
+## Defending
+
+### Correlation Analysis & Distributions
+
+```{r}
+main_data <- processDef(main_data_in = main_data, data_in = def_data, season_in = season)
+``` 
+## Miscellaneous
+
+### Correlation Analysis & Distributions
+
+```{r}
+main_data <- processMisc(main_data_in = main_data,
+                         data_in = misc_data,
+                         season_in = season)
+```
+
+## Save Data
+
+```{r}
+saveRDS(obj = main_data, file = "../../../football_latent_variable_analysis/1_data/pl_player_stats_2223")
 ```
 
